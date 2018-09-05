@@ -1,12 +1,9 @@
-package com.hengshi.test;
+package com.hengshi.test.tonghuanbi;
 
 import com.csvreader.CsvWriter;
-import com.hengshi.DateUtils;
+import com.hengshi.utils.DateUtils;
 
 import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class PrepareTestData {
@@ -29,9 +26,11 @@ public class PrepareTestData {
                 String[] data1 = {dinnertime, "张三", "北京", String.valueOf(day)};
                 String[] data2 = {dinnertime, "李四", "上海", "-" + day};
                 String[] data3 = {dinnertime, null, "天津", String.valueOf(day)};
+                String[] data4 = {null,"李四","北京",String.valueOf(day)};
                 csvWriter.writeRecord(data1);
                 csvWriter.writeRecord(data2);
                 csvWriter.writeRecord(data3);
+                csvWriter.writeRecord(data4);
             }
         }
         csvWriter.close();
