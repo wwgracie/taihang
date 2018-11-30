@@ -70,6 +70,10 @@ public class Configuration {
         return getBaseUrl() + "/api/apps";
     }
 
+    public String getDatasetUrl(int appid, int dsid) {
+        return getBaseUrl() + "/api/apps/" + appid + "/datasets/" + dsid;
+    }
+
 
     public String getDomain() {
         if(getProperty("localdomain").equals("yes")){
@@ -83,5 +87,10 @@ public class Configuration {
     public String getDashboardCreateUrl(int appid) {
         return getBaseUrl() + "/api/apps/" + appid + "/dashboards";
     }
+
+    public String getUploadFileUrl() { return getBaseUrl() + "/api/files"; }
+
+    public String getLocalFileDatasetCreateUrl(int appid, String fileid) {
+        return getBaseUrl() + "/api/files/" + fileid + "/sheets/0/apps/" + "appid" + "/save"; }
 
 }

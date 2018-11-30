@@ -1,15 +1,13 @@
 package com.hengshi.utils;
 
+import com.hengshi.test.models.ResponseObject;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.cookie.Cookie;
@@ -22,6 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +42,7 @@ public class HttpClientSession {
     }
 
     private void init() {
+        PropertyConfigurator.configure("config/log4j.properties");
         context = HttpClientContext.create();
         cookieStore = new BasicCookieStore();
         // 配置超时时间（连接服务端超时1秒，请求数据返回超时2秒）
@@ -63,10 +63,11 @@ public class HttpClientSession {
      * @throws ClientProtocolException
      * @throws IOException
      */
-    public String get(String url) throws ClientProtocolException, IOException {
+    public ResponseObject get(String url) throws ClientProtocolException, IOException {
         HttpGet httpget = new HttpGet(url);
         CloseableHttpResponse response = httpClient.execute(httpget, context);
-        String responseContent = null;
+        int code = response.getStatusLine().getStatusCode();
+        String responseBody = null;
         try {
             cookieStore = context.getCookieStore();
             List<Cookie> cookies = cookieStore.getCookies();
@@ -74,11 +75,12 @@ public class HttpClientSession {
                 log.debug("key:" + cookie.getName() + "  value:" + cookie.getValue());
 
             }
-            responseContent = EntityUtils.toString(response.getEntity());
+            responseBody = EntityUtils.toString(response.getEntity());
         } finally {
             response.close();
         }
-        return responseContent;
+
+        return new ResponseObject(code,responseBody);
     }
 
     /**
@@ -139,17 +141,18 @@ public class HttpClientSession {
      * @throws ClientProtocolException
      * @throws IOException
      */
-    public String post(String url, String payload)
-            throws ClientProtocolException, IOException {
+    public ResponseObject post(String url, String payload) throws ClientProtocolException, IOException {
         HttpPost httpPost = new HttpPost(url);
-        StringEntity entity = new StringEntity(payload, Constants.coding);
+        StringEntity entity = new StringEntity(payload, Constants.ENCODING_UTF8);
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.setEntity(entity);
         httpPost.setHeader("x-csrf-token", csrftoken);
         CloseableHttpResponse response = httpClient.execute(httpPost, context);
-        String responseStr = EntityUtils.toString(response.getEntity());
+        int code = response.getStatusLine().getStatusCode();
+        String responseBody = EntityUtils.toString(response.getEntity());
         response.close();
-        return responseStr;
+
+        return new ResponseObject(code, responseBody);
     }
 
     /**
@@ -172,7 +175,7 @@ public class HttpClientSession {
             uriBuilder.addParameters(postParameters);
             HttpPost httpPost = new HttpPost(uriBuilder.build());
 
-            StringEntity entity = new StringEntity(payload, Constants.coding);
+            StringEntity entity = new StringEntity(payload, Constants.ENCODING_UTF8);
             httpPost.addHeader("Content-Type", "application/json");
             httpPost.setEntity(entity);
             httpPost.setHeader("x-csrf-token", csrftoken);
@@ -195,8 +198,7 @@ public class HttpClientSession {
      * @throws ClientProtocolException
      * @throws IOException
      */
-    public String upload(String url, String fileName)
-            throws ClientProtocolException, IOException {
+    public String upload(String url, String fileName) throws ClientProtocolException, IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "multipart/form-data; boundary=12106075217940237331486476651");
         File file = new File(fileName);
@@ -224,18 +226,46 @@ public class HttpClientSession {
      * @throws ClientProtocolException
      * @throws IOException
      */
-    public String put(String url, String payload)
-            throws ClientProtocolException, IOException {
+    public ResponseObject put(String url, String payload) throws ClientProtocolException, IOException {
         HttpPut httpPut = new HttpPut(url);
-        StringEntity entity = new StringEntity(payload, Constants.coding);
+        StringEntity entity = new StringEntity(payload, Constants.ENCODING_UTF8);
         httpPut.addHeader("Content-Type", "application/json");
         httpPut.setEntity(entity);
         httpPut.setHeader("x-csrf-token", csrftoken);
         CloseableHttpResponse response = httpClient.execute(httpPut, context);
-        String responseStr = EntityUtils.toString(response.getEntity());
+        int code =response.getStatusLine().getStatusCode();
+        String responseBody = EntityUtils.toString(response.getEntity());
         response.close();
-        return responseStr;
+        return new ResponseObject(code, responseBody);
     }
+
+
+    /**
+     * http delete
+     *
+     * @param url
+     * @return response
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public ResponseObject delete(String url) throws ClientProtocolException, IOException {
+        HttpDelete httpdelete = new HttpDelete(url);
+        CloseableHttpResponse response = httpClient.execute(httpdelete, context);
+        int code = response.getStatusLine().getStatusCode();
+        String responseBody = "";
+        try {
+            cookieStore = context.getCookieStore();
+            List<Cookie> cookies = cookieStore.getCookies();
+            for (Cookie cookie : cookies) {
+                log.debug("key:" + cookie.getName() + "  value:" + cookie.getValue());
+            }
+            responseBody = EntityUtils.toString(response.getEntity());
+        } finally {
+            response.close();
+        }
+        return new ResponseObject(code, responseBody);
+    }
+
 
     public void closeSession() throws IOException {
         if (httpClient != null) httpClient.close();

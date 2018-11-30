@@ -24,7 +24,6 @@ public class Dashboard extends Model {
         return this;
     }
 
-
     public Object getOptions() {
         return options;
     }
@@ -37,6 +36,8 @@ public class Dashboard extends Model {
         this.options = options;
         return this;
     }
+
+
 
 
 }

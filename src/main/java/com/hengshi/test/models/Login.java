@@ -3,7 +3,7 @@ package com.hengshi.test.models;
 /**
  * @author wgy on 2018/11/29
  */
-public class Login extends Model{
+public class Login extends Model {
     private String email;
     private String password;
     private Object uuid;

@@ -15,8 +15,8 @@ public class LoginUtils {
 
     public static JSONObject getRSA(HttpClientSession httpClientSession) throws IOException {
         String urlStr = config.getBaseUrl() + "/api/rsa";
-        String responseStr = httpClientSession.post(urlStr,"");
-        JSONObject responseJson = (JSONObject) JSON.parse(responseStr);
+        String responseBody = httpClientSession.post(urlStr,"").getBody();
+        JSONObject responseJson = (JSONObject) JSON.parse(responseBody);
         return responseJson.getJSONObject("data");
     }
 
