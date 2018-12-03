@@ -74,6 +74,10 @@ public class Configuration {
         return getBaseUrl() + "/api/apps/" + appid + "/datasets/" + dsid;
     }
 
+    public String getChartCreateUrl(int appid, int dsbid) {
+        return getBaseUrl() + "/api/apps/" + appid + "/dashboards/" + dsbid + "/charts";
+    }
+
 
     public String getDomain() {
         if(getProperty("localdomain").equals("yes")){
@@ -92,5 +96,6 @@ public class Configuration {
 
     public String getLocalFileDatasetCreateUrl(int appid, String fileid) {
         return getBaseUrl() + "/api/files/" + fileid + "/sheets/0/apps/" + "appid" + "/save"; }
+
 
 }

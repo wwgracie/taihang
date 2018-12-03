@@ -1,0 +1,9 @@
+type,connhost,connport,username,password,database,encoding,categroy
+mysql,192.168.2.250,3380,test,test,test,UTF-8,Database
+postgresql,192.168.2.250,5410,postgres,postgres,postgres,UTF-8,Database
+sqlserver,192.168.2.250,14317,sa,Passw0rd#1,test,UTF-8,Database
+oracle,192.168.2.250,15211,qogir,12345678,xe,UTF-8,Database
+tidb,192.168.2.250,40200,root,,test,UTF-8,Database
+cloudera_impala,192.168.2.250,21210,hadoop,,default,UTF-8,SQL on Hadoop
+spark_sql,192.168.2.250,10230,hadoop,,default,UTF-8,SQL on Hadoop
+hive,192.168.2.250,10022,hadoop,,default,UTF-8,SQL on Hadoop

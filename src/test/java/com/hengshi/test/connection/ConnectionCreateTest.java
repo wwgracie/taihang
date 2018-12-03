@@ -1,7 +1,8 @@
 package com.hengshi.test.connection;
 
-import com.hengshi.test.base.TestBase;
+import com.hengshi.test.base.BaseTest;
 import com.hengshi.test.models.Connection;
+import com.hengshi.test.models.ResponseObject;
 import com.hengshi.utils.HttpClientSession;
 import com.hengshi.utils.LoginUtils;
 import com.jayway.jsonpath.JsonPath;
@@ -23,8 +24,8 @@ import java.io.PrintStream;
  * @author wgy on 2018/11/28
  */
 @RunWith(DataProviderRunner.class)
-public class TestConnectionCreate extends TestBase {
-    private static final Logger log = LogManager.getLogger(TestConnectionCreate.class);
+public class ConnectionCreateTest extends BaseTest {
+    private static final Logger log = LogManager.getLogger(ConnectionCreateTest.class);
     private static HttpClientSession httpcs = new HttpClientSession();
 
     @DataProvider
@@ -51,9 +52,9 @@ public class TestConnectionCreate extends TestBase {
         String connname = type + System.currentTimeMillis();
         String conn = new Connection(connname).type(type).host(host).port(port).username(username).password(password).database(database).encoding(encoding).category(category).toString();
         System.out.println(conn);
-        String response = httpcs.post(url, conn);
+        ResponseObject response = httpcs.post(url, conn);
         System.out.println(response);
-        int connectionId = JsonPath.read(response, "$.data.id");
+        int connectionId = JsonPath.read(response.getBody(), "$.data.id");
         System.out.println(connectionId);
         String fileName = "config/connection.properties";
         OutputStream f = new FileOutputStream(fileName, true);

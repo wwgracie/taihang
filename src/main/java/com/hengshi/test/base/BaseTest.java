@@ -2,6 +2,7 @@ package com.hengshi.test.base;
 
 import com.hengshi.test.config.Configuration;
 import com.hengshi.test.models.App;
+import com.hengshi.test.models.Chart;
 import com.hengshi.test.models.Dashboard;
 import com.hengshi.test.models.ResponseObject;
 import com.hengshi.utils.Constants;
@@ -36,8 +37,8 @@ public class BaseTest {
 
     public static String uploadFile(HttpClientSession httpcs, String filePath) throws IOException {
         String response = httpcs.upload(config.getUploadFileUrl(), filePath);
-        String fileid = JsonPath.read(response, "$..fileId");
-        return fileid;
+        String id = JsonPath.read(response, "$..fileId");
+        return id;
 
     }
 
@@ -60,6 +61,14 @@ public class BaseTest {
             response = httpcs.get(url).getBody();
             status = JsonPath.read(response, "$.data.status");
         }
+    }
+
+    public static int prepareChart(HttpClientSession httpcs, String title, int appid, int dsbid, int dsid) throws IOException {
+        String url = config.getChartCreateUrl(appid, dsbid);
+        String body = Chart.baseChart(title, dsid).toString();
+        String response = httpcs.post(url, body).getBody();
+        int id =  JsonPath.read(response, "$.data.id");
+        return id;
     }
 
     public void doTest(String testcase, HttpClientSession httpcs, String requestMethod, String url, String params, int expCode, String expBody, String jsonpath) {

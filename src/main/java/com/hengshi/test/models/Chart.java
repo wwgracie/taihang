@@ -68,7 +68,7 @@ public class Chart extends Model {
         return this;
     }
 
-    public static Chart baseCHART(String title, int datasetId) {
+    public static Chart baseChart(String title, int datasetId) {
         return new Chart(title).datasetId(datasetId)
                 .dashboardOptions(ImmutableMap.of("layouts", ImmutableMap.of("null", new Layout("null",0,0,24,12))))
                 .options(new ChartOptions().type("Bar").timebar(new Timebar().baseTimebar()).limit(1000)

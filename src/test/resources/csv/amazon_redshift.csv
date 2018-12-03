@@ -1,0 +1,2 @@
+type,connhost,connport,username,password,database,categroy
+amazon_redshift,192.168.2.250,5439,awsmaster,Redshift123,test,Cloud
